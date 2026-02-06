@@ -1,0 +1,17 @@
+# Optional overrides for AI prompts. Keys must match those used in api.py.
+# Use placeholders in braces, e.g. {brief}, {stock_list}. Missing keys use built-in defaults.
+# See api.py for available placeholders per endpoint.
+#
+# ai_schema:       placeholders: brief
+# ai_suggest_flow: placeholders: stock_list, param_list, flow_list, instruction
+# ai_question:      placeholders: meta_name, meta_question, stock_list, param_list, flow_detail, loop_list, sim_ctx, question
+# ai_suggest_scenarios: placeholders: model_name, param_list, stock_list, brief
+# ai_compare_runs:  placeholders: runs_text, question
+# ai_explain_schema: placeholders: meta_name, meta_question, stock_list, param_list, flow_detail, loop_list
+
+# Example override (uncomment to use):
+# ai_schema: |
+#   From the Model Brief below, design a small, explainable system dynamics model.
+#   [... rest of instructions ...]
+#   Model Brief:
+#   """{brief}"""
