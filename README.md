@@ -1,61 +1,129 @@
-# System Modeling & AI Task Force — Repeatable SD Methodology
+# System Dynamics Model Factory
 
-This folder contains a **repeatable way** for both boards (including AeroDyn Systems and other clients) to use system dynamics for **strategic options**—without building one big model and with **minimal friction**.
+A **repeatable, transparent** way to build and run small system-dynamics models for strategic questions—focused on **AeroDyn Lethal AI & long-term business**, with schema-driven simulation, scenario exploration, and optional AI (OpenAI + RAG).
 
-## Contents
+---
 
-| File | Purpose |
+## What it does
+
+- **One question, one model:** e.g. *“What happens to our long-term business if we heavily invest in lethal AI?”* — stocks, flows, and parameters are explicit and auditable.
+- **Schema view:** Diagram (SVG, React Flow, Cluster, Mermaid), variables & equations sidebar, reinforcing/balancing loops, AI schema explanation, add parameter, add scenario.
+- **Graph view:** Scenario presets (Base, High investment, Diversification, Stricter regulation, Lower AI performance), custom scenarios, chart with “So what?” and interpretation.
+- **AI assistant:** CEO-style Q&A, suggest flow, suggest scenarios; optional **RAG** over project docs (briefs, methodology).
+- **Full view:** Horizon, transparency block, exclude mechanisms, parameter sweep, compare runs, edit one relationship (when enabled).
+
+No MCP or agents—just HTTP, JSON, and deterministic simulation.
+
+---
+
+## Tech stack
+
+| Layer    | Stack |
+|----------|--------|
+| Backend  | Python 3, FastAPI, `scipy` (ODE), OpenAI API |
+| Frontend | React, TypeScript, Vite, Recharts |
+| AI       | OpenAI (chat + embeddings for RAG); no Mistral |
+
+---
+
+## Prerequisites
+
+- **Python 3.10+** (e.g. `pyenv install 3.11.6`)
+- **Node.js 18+** (for frontend)
+- **OpenAI API key** (for AI features and RAG)
+
+---
+
+## Installation & setup
+
+1. **Clone the repo**
+   ```bash
+   git clone https://github.com/LikhitaYerra/System-Dynamics-.git
+   cd "System-Dynamics-"
+   ```
+
+2. **Backend (Python)**
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate   # Windows: .venv\Scripts\activate
+   pip install -r requirements.txt
+   ```
+
+3. **Frontend**
+   ```bash
+   cd frontend
+   npm install
+   cd ..
+   ```
+
+4. **Environment (no secrets in repo)**
+   - Copy `.env.example` to `.env`.
+   - Set `OPENAI_API_KEY=sk-...` in `.env`.
+   - Optional: `RAG_ENABLED=1`, `OPENAI_MODEL=gpt-4o` (or `gpt-4o-mini`).
+
+---
+
+## How to run
+
+1. **Start the API** (from project root):
+   ```bash
+   python -m uvicorn api:app --reload --port 8000
+   ```
+
+2. **Start the frontend** (in another terminal):
+   ```bash
+   cd frontend && npm run dev
+   ```
+
+3. **Open the app** in your browser at the URL shown (e.g. **http://localhost:5173**).
+
+4. **Optional — Streamlit-only demo:**  
+   `streamlit run model_factory_app.py` (no React frontend).
+
+---
+
+## Project structure
+
+| Path | Purpose |
 |------|---------|
-| **SYSTEM_DYNAMICS_METHODOLOGY.md** | The process: four phases (Scope → Map → Build → Use), one-question-one-model rule, standard scenarios, and context note for AeroDyn. |
-| **MODEL_BRIEF_TEMPLATE.md** | One-page scope for each model. Fill once per engagement; reduces clarifying questions. |
-| **BUILDING_BLOCKS_ARCHETYPES.md** | Five reusable archetypes (capacity–demand, adoption, reputation, pipeline, resource competition) to start models quickly. |
-| **model_factory_app.py** | **System Dynamics Studio** Streamlit app: pick a model from the catalog (SIR, AeroDyn Pipeline, AeroDyn Lethal AI), or import from JSON (e.g. from GenAI); edit parameters, run simulation, view diagram, export. |
-| **sd_engine.py** | Schema-driven engine: build ODE and stock-flow diagram from a single schema; model catalog and provenance (source, loop_type, delay). |
-| **MODEL_FACTORY_CEO_BRIEF.md** | One-page brief for the CEO/board: what the factory delivers (insight, speed, reliability), no technical jargon. |
-| **REFLECTION_TRADEOFFS.md** | What’s systematic vs judgment; trade-offs; how the design maps to the assignment criteria. |
-| **AeroDyn_Lethal_AI_Model_Brief.md** | Model Brief for the “Lethal AI & long-term business” model, including reinterpretation of the management question. |
-| **README.md** | This overview. |
+| `api.py` | FastAPI app: catalog, schema, simulate, apply-patch, AI endpoints (schema, suggest-flow, question, explain-schema, suggest-scenarios, RAG). |
+| `sd_engine.py` | Schema-driven engine: build ODE from schema, run simulation, model catalog (SIR, AeroDyn Lethal AI, AeroDyn Pipeline). |
+| `rag.py` | Optional RAG: chunk project docs, embed (OpenAI), cache in `.rag_cache/`, retrieve for AI prompts. |
+| `frontend/` | React app: Schema view, Graph view, Full view; diagram, scenarios, chart, AI assistant. |
+| `AeroDyn_Lethal_AI_Model_Brief.md` | Model brief and reinterpretation of the management question. |
+| `BUILDING_BLOCKS_ARCHETYPES.md` | Reusable archetypes (capacity–demand, adoption, reputation, pipeline). |
+| `SYSTEM_DYNAMICS_METHODOLOGY.md` | Process: Scope → Map → Build → Use. |
+| `MODEL_FACTORY_CEO_BRIEF.md` | One-page CEO/board brief (insight, speed, reliability). |
+| `DESIGN_AND_TRADEOFFS.md` | Data structures, apply-patch, GenAI role, divergence. |
+| `REFLECTION_TRADEOFFS.md` | Systematic vs judgment, trade-offs. |
+| `SCRIPT_Explain_Schema_and_Flows.md` | Script to explain schema and flows in a demo. |
+| `AeroDyn_Model_Factory_PPT_Outline_v2.md` | PPT outline (problem, question, mechanisms, technical approach, architecture, demo). |
 
-## Quick start
+---
 
-**Run the System Dynamics Studio (interactive):**
-```bash
-streamlit run model_factory_app.py
-```
-Then: choose a model (e.g. **AeroDyn — Lethal AI & long-term business**), adjust parameters in the sidebar, and run scenarios. Use **Import from JSON** to load a schema from a Model Brief (e.g. via GenAI) and **Export** to download JSON or the GenAI prompt template.
+## Optional: RAG
 
-**Process (for each new question):**
-1. **Agree one strategic question** with the board/sponsor.
-2. **Fill the Model Brief** (use `MODEL_BRIEF_TEMPLATE.md`); get sign-off.
-3. **Follow the methodology** (Scope → Map → Build → Use) in `SYSTEM_DYNAMICS_METHODOLOGY.md`.
-4. **Pick 1–2 archetypes** from `BUILDING_BLOCKS_ARCHETYPES.md` for the map; customize names and parameters.
-5. **Run standard scenarios** (base, optimistic, pessimistic, 1–2 policy levers); document with a one-page “model passport.”
+The backend can augment AI prompts with relevant chunks from project documentation.
 
-For **AeroDyn** (defense, Europe): always complete the **Context flag** in the Brief (lethal vs non-lethal, perception, oversight) and add a short assumptions/limits note for models touching targeting or autonomous decision support.
+- **Enable:** `RAG_ENABLED=1` and `OPENAI_API_KEY` in `.env`.
+- **Check:** Open **http://localhost:8000/rag-status** — `rag_enabled: true`, `indexed_chunks` > 0.
+- **Use in app:** “Show explanation” (schema), CEO question, “Suggest flow”, “Suggest scenarios with AI” — each can use RAG when enabled.
 
-## Optional: RAG (retrieval-augmented generation)
+Indexed docs: Model Briefs, `BUILDING_BLOCKS_ARCHETYPES.md`, `MODEL_FACTORY_CEO_BRIEF.md`, `SYSTEM_DYNAMICS_METHODOLOGY.md`, `MODEL_BRIEF_TEMPLATE.md`, `DESIGN_AND_TRADEOFFS.md`.
 
-The FastAPI backend can augment AI prompts with relevant snippets from project documentation (Model Briefs, building blocks, methodology). This is **optional** and off by default.
-
-- **Enable:** Set `RAG_ENABLED=1` and `OPENAI_API_KEY` in `.env` (embeddings use OpenAI).
-- **How it works:** `rag.py` chunks the project’s markdown docs, embeds them with OpenAI, and caches results in `.rag_cache/`. When you call AI draft, suggest-flow, explain-schema, or CEO question, the backend retrieves the top-k relevant chunks and prepends them to the prompt.
-- **Indexed docs:** `AeroDyn_Lethal_AI_Model_Brief.md`, `BUILDING_BLOCKS_ARCHETYPES.md`, `MODEL_FACTORY_CEO_BRIEF.md`, `SYSTEM_DYNAMICS_METHODOLOGY.md`, `MODEL_BRIEF_TEMPLATE.md`, `DESIGN_AND_TRADEOFFS.md`.
-
-**How to test RAG in the app**
-
-1. Set `RAG_ENABLED=1` and `OPENAI_API_KEY` in `.env`, then restart the backend (`uvicorn api:app --reload`).
-2. Check status: open **http://localhost:8000/rag-status** in the browser. You should see `"rag_enabled": true` and `"indexed_chunks"` > 0 (first request may take a few seconds while the index is built and cached).
-3. In the app, trigger any of these; each uses RAG to inject relevant doc chunks into the AI prompt:
-   - **Schema view:** Click **“Show explanation”** (AI explain schema) for the loaded model.
-   - **Schema view:** In the AI assistant, ask a **CEO-style question** (e.g. “What drives reputation in this model?”) and send.
-   - **Schema view:** Use **“Suggest flow”** with an instruction (e.g. “add a balancing loop that reduces backlash”).
-   - **Graph view:** **“Suggest scenarios with AI”** — RAG adds context from methodology/briefs.
-   - **Draft from brief:** If the UI has a “Draft schema from Model Brief” flow, paste a brief and generate; RAG augments the prompt with similar content from indexed docs.
-4. You can’t see RAG chunks in the UI; the backend prepends them to the prompt. To confirm RAG is used, ensure `/rag-status` shows `indexed_chunks` > 0 and that AI answers sometimes reflect project terms (e.g. “building blocks”, “Model Brief”, “AeroDyn”) when relevant.
+---
 
 ## Design choices
 
-- **No single mega-model** — many small, focused models over time.
-- **One question per model** — clear boundary and reuse via building blocks.
-- **Minimal friction** — one mandatory artifact (Model Brief), one map review, standard scenarios.
-- **Same process for both firms** — AeroDyn uses the same methodology with context-specific Brief and documentation.
+- **No single mega-model** — many small, focused models.
+- **One question per model** — clear scope and reuse via building blocks.
+- **Minimal friction** — Model Brief as contract; same engine for all models.
+- **Transparent & deterministic** — explicit stocks, flows, parameters; same inputs → same results; no secrets in repo (`.env` is gitignored).
+
+---
+
+## Repository
+
+**https://github.com/LikhitaYerra/System-Dynamics-**
+
+Do not commit `.env` or API keys; use `.env.example` as a template.
