@@ -20,6 +20,9 @@ frontend/dist/
 # RAG cache (embeddings)
 .rag_cache/
 
+# Markdown (excluded from repo)
+*.md
+
 # IDE / OS
 .idea/
 .DS_Store
