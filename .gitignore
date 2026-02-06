@@ -23,6 +23,10 @@ frontend/dist/
 # Markdown (excluded from repo)
 *.md
 
+# PDF and PowerPoint (excluded from repo)
+*.pdf
+*.pptx
+
 # IDE / OS
 .idea/
 .DS_Store
