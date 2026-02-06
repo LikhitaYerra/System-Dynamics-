@@ -20,8 +20,9 @@ frontend/dist/
 # RAG cache (embeddings)
 .rag_cache/
 
-# Markdown (excluded from repo)
+# Markdown (excluded from repo except README)
 *.md
+!README.md
 
 # PDF and PowerPoint (excluded from repo)
 *.pdf
