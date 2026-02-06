@@ -126,4 +126,3 @@ Indexed docs: Model Briefs, `BUILDING_BLOCKS_ARCHETYPES.md`, `MODEL_FACTORY_CEO_
 
 **https://github.com/LikhitaYerra/System-Dynamics-**
 
-Do not commit `.env` or API keys; use `.env.example` as a template.
